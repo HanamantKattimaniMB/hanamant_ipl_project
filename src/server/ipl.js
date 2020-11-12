@@ -17,5 +17,18 @@ function matchesWonPerTeamPerYear(row,objectToStoreOutput)
    return objectToStoreOutput
 }
 
-module.exports={matchesPerYear,matchesWonPerTeamPerYear}
+
+function extraRunPerTeamInYear(row,year,extraRun)
+{
+  if(row['season']==year)
+  {
+      if(extraRun.hasOwnProperty(row['winner']))
+      extraRun[row['winner']] += parseInt(row['win_by_runs'])
+      else
+      extraRun[row['winner']] =parseInt(row['win_by_runs'])       
+  } 
+  return extraRun
+}
+
+module.exports={matchesPerYear,matchesWonPerTeamPerYear,extraRunPerTeamInYear}
 
