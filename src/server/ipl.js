@@ -1,71 +1,122 @@
 const fs=require('fs')
-function matchesPerYear(row,perYearMatchCount){
-    if(perYearMatchCount.hasOwnProperty(row['season']))
-        perYearMatchCount[row['season']]++
-    else
-        perYearMatchCount[row['season']]=0
-    return perYearMatchCount
+
+//=========  1  ====
+function matchesPerYear(match_data)
+{   const output={}
+    match_data.map((match)=>{
+        if(output.hasOwnProperty(match['season']))
+            output[match['season']]++
+        else
+            output[match['season']]=1
+  })
+    return output
 }
 
 
-function matchesWonPerTeamPerYear(row,objectToStoreOutput)
-{
-  if(objectToStoreOutput.hasOwnProperty(row['season']+"  "+row['winner']))
-  objectToStoreOutput[row['season']+"  "+row['winner']]++
-   else
-   objectToStoreOutput[row['season']+"  "+row['winner']]=1
-   return objectToStoreOutput
-}
-
-
-function extraRunPerTeamInYear(row,year,extraRun)
-{
-  if(row['season']==year)
-  {
-      if(extraRun.hasOwnProperty(row['winner']))
-      extraRun[row['winner']] += parseInt(row['win_by_runs'])
-      else
-      extraRun[row['winner']] =parseInt(row['win_by_runs'])       
-  } 
-  return extraRun
-}
-
-
-
-function getId(row,matchIdInYear,year,column)
-{
-  if(row['season']==year)
-    {  
-        if(!(matchIdInYear.hasOwnProperty(row[column])))
-          matchIdInYear[row['id']] = 0
-    }
-    return matchIdInYear
-}
-
-function extraRunConceded(row1,extra_runs)
-{
-if(extra_runs.hasOwnProperty(row1['match_id']))
-extra_runs[row1['match_id']]+=parseInt(row1['extra_runs'])
-return extra_runs
+//============ 2 =====           
+function matchesWonPerTeamPerYear(match_data)
+{   let output={}
+       
+      match_data.map((match)=>{
+        if(output[match['season']])
+        {
+            if(output[match['season']][match['winner']])
+                output[match['season']][match['winner']]++
+            else
+                output[match['season']][match['winner']]=1   
+        }
+        else
+        {   output[match['season']]={}
+            output[match['season']][match['winner']]=1
+        }
+    })
+    return output
 }
 
 
 
-function topTen(economicalBowler)
-{
-  var sort_economicalBowler = [];
-  for (var bowler in economicalBowler) {
-    sort_economicalBowler.push([bowler, economicalBowler[bowler]]);
-    }
 
-    sort_economicalBowler.sort(function(a, b) {
-      return a[1] - b[1];
-  });
+
+//=======  3  ======
+function extraRunConceded(match_data,delivery_data,year)
+{
+    let filtered_match_data=match_data.filter(match=>match.season==year)
+    let output={}
+      filtered_match_data.map((match)=>{
+        for(let delivery of delivery_data)
+        {
+            if(match['id']==delivery['match_id'])
+            {
+                if(output[delivery.bowling_team])
+                {
+                    output[delivery['bowling_team']]+=parseInt(delivery['extra_runs'])
+                }
+                else
+                {
+                    output[delivery['bowling_team']]=parseInt(delivery['extra_runs'])
+                }
+
+            }
+        }
+      })
+    return output
+}
+
+
+
+//========= 4 =======
+function economicalBowlerInSeason(match_data,delivery_data,year)
+{
+    let output={}
+    let filtered_match_data=match_data.filter(match=>match.season==year)
+    filtered_match_data.map((match)=>{
+        for(let delivery of delivery_data)
+        {         
+            if(match['id']==delivery['match_id'])
+            {
+                if(output.hasOwnProperty(delivery['bowler']))
+                {
+                    output[delivery['bowler']]['run']+=parseInt(delivery['total_runs'])
+                    if((delivery['wide_runs']==0) && (delivery['noball_runs']==0))
+                        output[delivery['bowler']]['bowls']++
+                }
+                else
+                {
+                    output[delivery['bowler']]={}
+                    output[delivery['bowler']]['run']=parseInt(delivery['total_runs'])
+                    if((delivery['noball_runs']==0) && (delivery['wide_runs']==0))
+                        output[delivery['bowler']]['bowls']=1
+                    else
+                        output[delivery['bowler']]['bowls']=0
+                    
+                }
+            }
+        }
+    })
   
   
-  return sort_economicalBowler
-}
+    let array=[]
+    for(let bowler in output)
+    {   let over=output[bowler].bowls/6
+        let runs= output[bowler].run
+        economicalRate=runs/over
+        array.push([bowler,economicalRate])
+    }
+   
+    let sortedArray=array.sort((a,b)=>
+    {
+        return a[1]-b[1]
+    })
 
+    let topTenEconomicalBowler=[]
+    let count=0
+    for(bowler in sortedArray)
+    {   if(count<10)
+      topTenEconomicalBowler[bowler]=sortedArray[bowler]
+        count++
+    }
+    return topTenEconomicalBowler
+}
 
 
 const storeDataToJSON = (str, path) => {
@@ -78,5 +129,10 @@ const storeDataToJSON = (str, path) => {
 
 
 
-module.exports={matchesPerYear,matchesWonPerTeamPerYear,extraRunPerTeamInYear,getId,extraRunConceded,topTen,storeDataToJSON}
+ 
 
+
+
+
+
+module.exports={matchesPerYear,matchesWonPerTeamPerYear,extraRunConceded,economicalBowlerInSeason,storeDataToJSON}

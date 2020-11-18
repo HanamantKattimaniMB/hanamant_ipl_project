@@ -1,72 +1,28 @@
-const csv = require('csv-parser');
-const fs = require('fs');
-const ipl= require('./ipl')
 
-let perYearMatchCount={}
-let objectToStoreOutput={}
-let extra_runs={}
-let matchIdInYear={}
-let allBowlerInYear={}
-let economicalBowler={}
-
-
-fs.createReadStream('../data/matches.csv')
-  .on('error',()=>{
-    console.log('Error has occured')
-    })
-  .pipe(csv())
-  .on('data', (row) => {
-    //que1
-    perYearMatchCount=ipl.matchesPerYear(row,perYearMatchCount)
-    
+const fs=require('fs')
+const csv=require('csvtojson')
+const ipl=require('./ipl')
+csv()
+.fromFile('../data/matches.csv')
+.then((match_data)=>{
+    // que1
+    let output1=ipl.matchesPerYear(match_data)
+    ipl.storeDataToJSON(output1,'../public/output/matchesPerYear.json')
     //que2
-    objectToStoreOutput=ipl.matchesWonPerTeamPerYear(row,objectToStoreOutput)
-    //que3
-    matchIdInYear=ipl.getId(row,matchIdInYear,'2016','winner')  
-    extra_runs=matchIdInYear
-
-    //que4 
-    matchIdInYear=ipl.getId(row,matchIdInYear,'2016','winner') 
-    allBowlerInYear=matchIdInYear
-
-  })
-  .on('end', () => {
-
-                  fs.createReadStream('../data/deliveries.csv')
-                  .pipe(csv())
-                  .on('data', (row1) => {
-                    //que3
-                    extra_runs=ipl.extraRunConceded(row1,extra_runs)
-
-                    //que4
-                    if(allBowlerInYear.hasOwnProperty(row1['match_id'])){
-                      if(economicalBowler.hasOwnProperty(row1['bowler']))
-                        economicalBowler[row1['bowler']]+=parseInt(row1['total_runs'])
-                      else
-                        economicalBowler[row1['bowler']]=0
-                      }
-                   
-                  })
-                  .on('end', () => {
-                    
-                    ipl.storeDataToJSON(extra_runs,'../public/output/extraRunConceded.json')
-
-                    let topTenEconomicalBowler=ipl.topTen(economicalBowler)
-                    ipl.storeDataToJSON(topTenEconomicalBowler,'../public/output/topTenEconomicalBowler.json')
-                    
-                    
-                  });
-
+    output2=ipl.matchesWonPerTeamPerYear(match_data)
+    ipl.storeDataToJSON(output2,'../public/output/matchesWonPerTeamPerYear.json')
     
-    ipl.storeDataToJSON(perYearMatchCount,'../public/output/matchesPerYear.json')
+    csv()
+    .fromFile('../data/deliveries.csv')
+    .then((delivery_data)=>{
+        //que3
+       output3=ipl.extraRunConceded(match_data,delivery_data,'2016')
+        ipl.storeDataToJSON(output3,'../public/output/extraRunConceded.json')
+       //que4
+        output4=ipl.economicalBowlerInSeason(match_data,delivery_data,'2015')
+        ipl.storeDataToJSON(output4,'../public/output/topTenEconomicalBowler.json')
+            })
     
-    ipl.storeDataToJSON(objectToStoreOutput,'../public/output/matchesWonPerTeamPerYear.json')
+})
     
-  });
-
- 
-  
-
-
-
 
