@@ -22,7 +22,6 @@ csv()
         output4=ipl.economicalBowlerInSeason(match_data,delivery_data,'2015')
         ipl.storeDataToJSON(output4,'../public/output/topTenEconomicalBowler.json')
             })
-    
 })
     
 
