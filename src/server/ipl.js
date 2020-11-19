@@ -41,10 +41,10 @@ function matchesWonPerTeamPerYear(match_data)
 function extraRunConceded(match_data,delivery_data,year)
 {
     let filtered_match_data=match_data.filter(match=>match.season==year)
-    let output={}
+    const output={}
       filtered_match_data.map((match)=>{
-        for(let delivery of delivery_data)
-        {
+    
+           delivery_data.map((delivery)=>{
             if(match['id']==delivery['match_id'])
             {
                 if(output[delivery.bowling_team])
@@ -57,21 +57,21 @@ function extraRunConceded(match_data,delivery_data,year)
                 }
 
             }
-        }
+        })
       })
     return output
+    
 }
 
 
 
 //========= 4 =======
-function economicalBowlerInSeason(match_data,delivery_data,year)
+function topTenEconomicalBowlerInSeason(match_data,delivery_data,year)
 {
     let output={}
     let filtered_match_data=match_data.filter(match=>match.season==year)
     filtered_match_data.map((match)=>{
-        for(let delivery of delivery_data)
-        {         
+            delivery_data.map((delivery)=>{    
             if(match['id']==delivery['match_id'])
             {
                 if(output.hasOwnProperty(delivery['bowler']))
@@ -91,7 +91,7 @@ function economicalBowlerInSeason(match_data,delivery_data,year)
                     
                 }
             }
-        }
+        }) 
     })
   
   
@@ -123,7 +123,7 @@ const storeDataToJSON = (str, path) => {
     try {
       fs.writeFileSync(path, JSON.stringify(str))
     } catch (err) {
-      console.error(err)
+      console.error('error occured',err)
     }
   }
 
@@ -135,4 +135,4 @@ const storeDataToJSON = (str, path) => {
 
 
 
-module.exports={matchesPerYear,matchesWonPerTeamPerYear,extraRunConceded,economicalBowlerInSeason,storeDataToJSON}
+module.exports={matchesPerYear,matchesWonPerTeamPerYear,extraRunConceded,topTenEconomicalBowlerInSeason,storeDataToJSON}
