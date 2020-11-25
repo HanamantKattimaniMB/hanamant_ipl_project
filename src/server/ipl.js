@@ -1,6 +1,4 @@
 const fs=require('fs')
-
-//=========  1  ====
 function matchesPerYear(match_data)
 {   const output={}
     match_data.map((match)=>{
@@ -12,12 +10,19 @@ function matchesPerYear(match_data)
     return output
 }
 
-
-//============ 2 =====           
+          
 function matchesWonPerTeamPerYear(match_data)
 {   let output={}
-       
+    let teams=new Set()
+    let seasons=new Set()
+
       match_data.map((match)=>{
+        if(match['winner']!='')
+        {
+          teams.add(match['winner'])  
+        }
+        seasons.add(match['season'])
+
         if(output[match['season']])
         {
             if(output[match['season']][match['winner']])
@@ -30,29 +35,49 @@ function matchesWonPerTeamPerYear(match_data)
             output[match['season']][match['winner']]=1
         }
     })
-    return output
+  
+    let sortedSeasons=Array.from(seasons).sort((a,b)=>{return a-b})
+    let sortedTeams=Array.from(teams).sort((a,b)=>{return a-b})
+
+    let outputObj={}
+    for(let season of sortedSeasons){
+        outputObj[season]=[]
+        for(let team of sortedTeams){
+            if(output[season][team]){
+                outputObj[season].push(output[season][team])
+            }
+            else{
+                outputObj[season].push(0)
+            }
+        }
+    }
+
+    let matchesWithSeasonAndWin=[]
+    let teamData={}
+    for(let year in outputObj){
+        teamData['name']=year
+        teamData['data']=outputObj[year]
+        matchesWithSeasonAndWin.push(teamData)
+        teamData={}
+    }
+  
+    let mainOutput={}
+    mainOutput['teams']=sortedTeams
+    mainOutput['matches']=matchesWithSeasonAndWin
+    return mainOutput
 }
 
 
-
-
-
-//=======  3  ======
 function extraRunConceded(match_data,delivery_data,year)
 {
     let filtered_match_data=match_data.filter(match=>match.season==year)
     const output={}
       filtered_match_data.map((match)=>{
-    
            delivery_data.map((delivery)=>{
-            if(match['id']==delivery['match_id'])
-            {
-                if(output[delivery.bowling_team])
-                {
+            if(match['id']==delivery['match_id']){
+                if(output[delivery.bowling_team]){
                     output[delivery['bowling_team']]+=parseInt(delivery['extra_runs'])
-                }
-                else
-                {
+                }else{
                     output[delivery['bowling_team']]=parseInt(delivery['extra_runs'])
                 }
 
@@ -65,23 +90,19 @@ function extraRunConceded(match_data,delivery_data,year)
 
 
 
-//========= 4 =======
 function topTenEconomicalBowlerInSeason(match_data,delivery_data,year)
 {
     let output={}
     let filtered_match_data=match_data.filter(match=>match.season==year)
     filtered_match_data.map((match)=>{
             delivery_data.map((delivery)=>{    
-            if(match['id']==delivery['match_id'])
-            {
-                if(output.hasOwnProperty(delivery['bowler']))
-                {
+            if(match['id']==delivery['match_id']){
+                if(output.hasOwnProperty(delivery['bowler'])){
                     output[delivery['bowler']]['run']+=parseInt(delivery['total_runs'])
                     if((delivery['wide_runs']==0) && (delivery['noball_runs']==0))
                         output[delivery['bowler']]['bowls']++
                 }
-                else
-                {
+                else{
                     output[delivery['bowler']]={}
                     output[delivery['bowler']]['run']=parseInt(delivery['total_runs'])
                     if((delivery['noball_runs']==0) && (delivery['wide_runs']==0))
@@ -96,26 +117,28 @@ function topTenEconomicalBowlerInSeason(match_data,delivery_data,year)
   
   
     let array=[]
-    for(let bowler in output)
-    {   let over=output[bowler].bowls/6
+    for(let bowler in output){
+        let over=output[bowler].bowls/6
         let runs= output[bowler].run
         economicalRate=runs/over
         array.push([bowler,economicalRate])
     }
    
-    let sortedArray=array.sort((a,b)=>
-    {
+    let sortedArray=array.sort((a,b)=>{
         return a[1]-b[1]
     })
 
     let topTenEconomicalBowler=[]
     let count=0
-    for(bowler in sortedArray)
-    {   if(count<10)
+    for(bowler in sortedArray){
+    if(count<10)
       topTenEconomicalBowler[bowler]=sortedArray[bowler]
         count++
     }
-    return topTenEconomicalBowler
+
+    let topTenEconomicalBowler_obj=Object.assign({}, topTenEconomicalBowler)
+
+    return topTenEconomicalBowler_obj
 }
 
 
