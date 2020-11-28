@@ -1,1 +1,210 @@
-{"teams":["Sunrisers Hyderabad","Rising Pune Supergiant","Kolkata Knight Riders","Kings XI Punjab","Royal Challengers Bangalore","Mumbai Indians","Delhi Daredevils","Gujarat Lions","Chennai Super Kings","Rajasthan Royals","Deccan Chargers","Pune Warriors","Kochi Tuskers Kerala","Rising Pune Supergiants"],"matches":[{"name":"2008","data":[0,0,6,10,4,7,7,0,9,13,2,0,0,0]},{"name":"2009","data":[0,0,3,7,9,5,10,0,8,6,9,0,0,0]},{"name":"2010","data":[0,0,7,4,8,11,7,0,9,6,8,0,0,0]},{"name":"2011","data":[0,0,8,7,10,10,4,0,11,6,6,4,6,0]},{"name":"2012","data":[0,0,12,8,8,10,11,0,10,7,4,4,0,0]},{"name":"2013","data":[10,0,6,8,9,13,3,0,12,11,0,4,0,0]},{"name":"2014","data":[6,0,11,12,5,7,2,0,10,7,0,0,0,0]},{"name":"2015","data":[7,0,7,3,8,10,5,0,10,7,0,0,0,0]},{"name":"2016","data":[11,0,8,4,9,7,7,9,0,0,0,0,0,5]},{"name":"2017","data":[8,10,9,7,3,12,6,4,0,0,0,0,0,0]}]}
+{
+    "teams": [
+        "Sunrisers Hyderabad",
+        "Rising Pune Supergiant",
+        "Kolkata Knight Riders",
+        "Kings XI Punjab",
+        "Royal Challengers Bangalore",
+        "Mumbai Indians",
+        "Delhi Daredevils",
+        "Gujarat Lions",
+        "Chennai Super Kings",
+        "Rajasthan Royals",
+        "Deccan Chargers",
+        "Pune Warriors",
+        "Kochi Tuskers Kerala",
+        "Rising Pune Supergiants"
+    ],
+    "matches": [
+        {
+            "name": "2008",
+            "data": [
+                0,
+                0,
+                6,
+                10,
+                4,
+                7,
+                7,
+                0,
+                9,
+                13,
+                2,
+                0,
+                0,
+                0
+            ]
+        },
+        {
+            "name": "2009",
+            "data": [
+                0,
+                0,
+                3,
+                7,
+                9,
+                5,
+                10,
+                0,
+                8,
+                6,
+                9,
+                0,
+                0,
+                0
+            ]
+        },
+        {
+            "name": "2010",
+            "data": [
+                0,
+                0,
+                7,
+                4,
+                8,
+                11,
+                7,
+                0,
+                9,
+                6,
+                8,
+                0,
+                0,
+                0
+            ]
+        },
+        {
+            "name": "2011",
+            "data": [
+                0,
+                0,
+                8,
+                7,
+                10,
+                10,
+                4,
+                0,
+                11,
+                6,
+                6,
+                4,
+                6,
+                0
+            ]
+        },
+        {
+            "name": "2012",
+            "data": [
+                0,
+                0,
+                12,
+                8,
+                8,
+                10,
+                11,
+                0,
+                10,
+                7,
+                4,
+                4,
+                0,
+                0
+            ]
+        },
+        {
+            "name": "2013",
+            "data": [
+                10,
+                0,
+                6,
+                8,
+                9,
+                13,
+                3,
+                0,
+                12,
+                11,
+                0,
+                4,
+                0,
+                0
+            ]
+        },
+        {
+            "name": "2014",
+            "data": [
+                6,
+                0,
+                11,
+                12,
+                5,
+                7,
+                2,
+                0,
+                10,
+                7,
+                0,
+                0,
+                0,
+                0
+            ]
+        },
+        {
+            "name": "2015",
+            "data": [
+                7,
+                0,
+                7,
+                3,
+                8,
+                10,
+                5,
+                0,
+                10,
+                7,
+                0,
+                0,
+                0,
+                0
+            ]
+        },
+        {
+            "name": "2016",
+            "data": [
+                11,
+                0,
+                8,
+                4,
+                9,
+                7,
+                7,
+                9,
+                0,
+                0,
+                0,
+                0,
+                0,
+                5
+            ]
+        },
+        {
+            "name": "2017",
+            "data": [
+                8,
+                10,
+                9,
+                7,
+                3,
+                12,
+                6,
+                4,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+            ]
+        }
+    ]
+}

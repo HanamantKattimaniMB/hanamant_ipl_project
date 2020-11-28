@@ -1,4 +1,3 @@
-//1
 function matchesPerYear() {
     fetch("/matchesPerYear.json")
         .then((resp) => {
@@ -20,7 +19,10 @@ function matchesPerYear() {
                     type: 'column'
                 },
                 title: {
-                    text: 'Matches per year'
+                    text: 'Number of Matches played per year',
+                    style: {
+                        fontSize: '2.5em'
+                    }
                 },
                
                 xAxis: {
@@ -32,7 +34,7 @@ function matchesPerYear() {
                             fontFamily: 'Verdana, sans-serif'
                         }
                     }
-                },
+                }, 
                 yAxis: {
                     min: 0,
                     title: {
@@ -46,7 +48,7 @@ function matchesPerYear() {
                     pointFormat: 'Matches in 2017: <b>{point.y}</b>'
                 },
                 series: [{
-                    name: 'Population',
+                    name: 'Number Of matches',
                     data: array
                   ,
                 }]
@@ -57,7 +59,8 @@ function matchesPerYear() {
         })
 }
 matchesPerYear()
-//2
+
+
 function matchesWonPerTeamPerYear() {
     fetch("/matchesWonPerTeamPerYear.json")
         .then((resp) => {
@@ -65,7 +68,7 @@ function matchesWonPerTeamPerYear() {
                 return resp.json()
             }
             else {
-                throw new Error("Error occurred in response")
+                throw new Error("No response from server")
             }
         })
         .then((data) => {
@@ -120,7 +123,7 @@ function matchesWonPerTeamPerYear() {
 }
 matchesWonPerTeamPerYear()
 
-//3
+
 function extraRunConceded() {
     fetch("/extraRunConceded.json")
         .then((resp) => {
@@ -132,10 +135,8 @@ function extraRunConceded() {
             }
         })
         .then((data) => {
-          //  console.log(data)
             let team = Object.keys(data)
             let extraConcededRuns = Object.values(data)
-           // console.log(team)
 
 
             Highcharts.chart('chart3', {
@@ -143,17 +144,12 @@ function extraRunConceded() {
                     type: 'column'
                 },
                 title: {
-                    text: 'Extra run conceded',
+                    text: 'Extra runs conceded per team in the year 2016',
                     style: {
                         fontSize: '2.5em'
                     }
                 },
-                subtitle: {
-                    text: 'Extra runs conceded per team in the year 2016',
-                    style: {
-                        fontSize: '1.2em'
-                    }
-                },
+
                 xAxis: {
                     categories: team,
                     title: {
@@ -180,7 +176,7 @@ function extraRunConceded() {
                     enabled: false
                 },
                 series: [{
-                    name: 'runs',
+                    name: 'Extra runs',
                     data: extraConcededRuns
                 }],
             })
@@ -189,7 +185,8 @@ function extraRunConceded() {
         })
 }
 extraRunConceded()
-//4
+
+
 function topTenEconomicalBowler() {
     fetch("/topTenEconomicalBowler.json")
         .then((resp) => {
@@ -201,8 +198,6 @@ function topTenEconomicalBowler() {
             }
         })
         .then((data) => {
-            console.log(data)
-
             let topbowler=Object.values(data)
 
             Highcharts.chart('chart4', {
@@ -210,7 +205,10 @@ function topTenEconomicalBowler() {
                     type: 'column'
                 },
                 title: {
-                    text: 'Top ten economical bowlers in ipl'
+                    text: 'Top ten economical bowlers in 2015'
+                    ,style: {
+                        fontSize: '2.5em'
+                    }
                 },
                 xAxis: {
                     type: 'category',
@@ -242,15 +240,15 @@ function topTenEconomicalBowler() {
                     pointFormat: 'Economy Rate: <b>{point.y:.1f}</b>'
                 },
                 series: [{
-                    name: 'Population',
+                    name: 'Economy Rate',
                     data: topbowler,
                     dataLabels: {
                         enabled: true,
                         rotation: -90,
                         color: '#FFFFFF',
                         align: 'right',
-                        format: '{point.y:.1f}', // one decimal
-                        y: 10, // 10 pixels down from the top
+                        format: '{point.y:.1f}', 
+                        y: 10, 
                         style: {
                             fontSize: '13px',
                             fontFamily: 'Verdana, sans-serif'
@@ -258,10 +256,8 @@ function topTenEconomicalBowler() {
                     }
                 }]
             })
-
-
         }).catch((err)=>{
-            console.log("error occured", err)
+            console.log("error occurred", err)
         })
 }
 topTenEconomicalBowler()

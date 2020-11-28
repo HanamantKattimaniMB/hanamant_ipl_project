@@ -1,41 +1,45 @@
-
-const fs=require('fs')
 const csv=require('csvtojson')
 const ipl=require('./ipl')
+
+const PATH_MATCHES_PER_YEAR='../public/output/matchesPerYear.json'
+const PATH_MATCHES_WON_PER_TEAM_PER_YEAR='../public/output/matchesWonPerTeamPerYear.json'
+const PATH_EXTRA_RUN_CONCEDED='../public/output/extraRunConceded.json'
+const PATH_TOP_TEN_ECONOMICAL_BOWLER='../public/output/topTenEconomicalBowler.json'
+
+const PATH_DATASET_MATCHES='../data/matches.csv'
+const PATH_DATASET_DELIVERIES='../data/deliveries.csv'
+
 csv()
-.fromFile('../data/matches.csv')
+.fromFile(PATH_DATASET_MATCHES)
 .then((match_data)=>{
-    // que1
-    let output1=ipl.matchesPerYear(match_data)
-    ipl.storeDataToJSON(output1,'../public/output/matchesPerYear.json')
-    //que2
-    output2=ipl.matchesWonPerTeamPerYear(match_data)
-    ipl.storeDataToJSON(output2,'../public/output/matchesWonPerTeamPerYear.json')
+
+    let output1 = ipl.matchesPerYear(match_data)
+    ipl.storeDataToJSON(output1,PATH_MATCHES_PER_YEAR)
+    
+    output2 = ipl.matchesWonPerTeamPerYear(match_data)
+    ipl.storeDataToJSON(output2,PATH_MATCHES_WON_PER_TEAM_PER_YEAR)
     
     csv()
-    .fromFile('../data/deliveries.csv')
-   
-            
+    .fromFile(PATH_DATASET_DELIVERIES)
     .then((delivery_data)=>{
-        //que3
-       output3=ipl.extraRunConceded(match_data,delivery_data,'2016')
-        ipl.storeDataToJSON(output3,'../public/output/extraRunConceded.json')
-       //que4
-        output4=ipl.topTenEconomicalBowlerInSeason(match_data,delivery_data,'2015')
-        ipl.storeDataToJSON(output4,'../public/output/topTenEconomicalBowler.json')
-            }).catch((err)=>{
-                if(err)
-                {
-                    console.log("error occured")
+        output3 = ipl.extraRunConceded(match_data,delivery_data,'2016')
+        ipl.storeDataToJSON(output3,PATH_EXTRA_RUN_CONCEDED)
+
+        output4 = ipl.topTenEconomicalBowlerInSeason(match_data,delivery_data,'2015')
+        ipl.storeDataToJSON(output4,PATH_TOP_TEN_ECONOMICAL_BOWLER)
+        })
+        .catch((err)=>{
+                if(err){
+                    console.log("File not exists")
                 }
             })
            
 }).catch((err)=>{
-    if(err)
-    {
-        console.log("error occured")
+    if(err){
+        console.log("File not exists")
     }
 })
+
 
     
 
