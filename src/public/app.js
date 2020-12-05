@@ -1,5 +1,5 @@
 function matchesPerYear() {
-    fetch("/matchesPerYear.json")
+    fetch("/matchesPerYear")
         .then((resp) => {
             if (resp.ok === true) {
                 return resp.json()
@@ -13,7 +13,7 @@ function matchesPerYear() {
             for(let year in data){
                 array.push([year,data[year]])
             }
-           
+
             Highcharts.chart('chart1', {
                 chart: {
                     type: 'column'
@@ -60,9 +60,8 @@ function matchesPerYear() {
 }
 matchesPerYear()
 
-
 function matchesWonPerTeamPerYear() {
-    fetch("/matchesWonPerTeamPerYear.json")
+    fetch("/matchesWonPerTeamPerYear")
         .then((resp) => {
             if (resp.ok === true) {
                 return resp.json()
@@ -73,9 +72,50 @@ function matchesWonPerTeamPerYear() {
         })
         .then((data) => {
 
-            let team=data.teams
-            let winner=data.matches
+            let teams = new Set()
+            let season = new Set()
+            for(let year in data){
+                for(let team in Object.values(data[year])){
+                    let obj_team=Object.keys(data[year])
+                    teams.add(obj_team[team])
+                }
+                season.add(year)
+            }
+            
+            let sortedTeams = Array.from(teams).sort((a,b) => {return a-b})
+            let sortedSeasons = Array.from(season).sort((a,b) => {return a-b})
+        
+            let outputObj = {}
+            for(let season of sortedSeasons){
+                outputObj[season] = []
+                for(let team of sortedTeams){
+                    if(data[season][team]){
+                        outputObj[season].push(data[season][team])
+                    }
+                    else{
+                        outputObj[season].push(0)
+                    }
+                }
+            }
 
+
+            let matchesWithSeasonAndWin = []
+            let teamData = {}
+            for(let year in outputObj){
+                teamData['name'] = year
+                teamData['data'] = outputObj[year]
+                matchesWithSeasonAndWin.push(teamData)
+                teamData = {}
+            }
+
+            let mainOutput = {}
+            mainOutput['teams'] = sortedTeams
+            mainOutput['matches'] = matchesWithSeasonAndWin
+            
+            let team = mainOutput.teams
+            let winner = mainOutput.matches
+
+  
             Highcharts.chart('chart2', {
                 chart: {
                     type: 'bar'
@@ -116,6 +156,7 @@ function matchesWonPerTeamPerYear() {
                 },
                 series: winner
             });
+
                           
         }).catch((err) => {
             console.log("error occured", err)
@@ -125,7 +166,7 @@ matchesWonPerTeamPerYear()
 
 
 function extraRunConceded() {
-    fetch("/extraRunConceded.json")
+    fetch("/extraRunConceded")
         .then((resp) => {
             if (resp.ok === true) {
                 return resp.json()
@@ -188,7 +229,7 @@ extraRunConceded()
 
 
 function topTenEconomicalBowler() {
-    fetch("/topTenEconomicalBowler.json")
+    fetch("/topTenEconomicalBowler")
         .then((resp) => {
              if (resp.ok === true) {
                 return resp.json()
@@ -256,7 +297,7 @@ function topTenEconomicalBowler() {
                     }
                 }]
             })
-        }).catch((err)=>{
+        }).catch((err) => {
             console.log("error occurred", err)
         })
 }
