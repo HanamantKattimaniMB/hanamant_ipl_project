@@ -1,14 +1,12 @@
 const http=require('http')
 const fs=require('fs')
+const envVariable=require('./config')
+
+const ipl=require('./ipl')
 
 const PATH_INDEX_HTML='../public/index.html'
 const PATH_STYLE_CSS='../public/style.css'
 const PATH_APP_JS='../public/app.js'
-
-const PATH_MATCHES_PER_YEAR='../public/output/matchesPerYear.json'
-const PATH_MATCHES_OWN_PAE_TEAM_PER_YEAR='../public/output/matchesWonPerTeamPerYear.json'
-const PATH_EXTRA_RUN_CONCEDED='../public/output/extraRunConceded.json'
-const PATH_TOP_TEN_ECONOMICAL_BOWLER='../public/output/topTenEconomicalBowler.json'
 
 const readFilePromise=(filename)=>{
     return new Promise((resolve,reject)=>{
@@ -75,55 +73,84 @@ const server=http.createServer((req,res)=>{
             break
         }
 
-        case '/matchesPerYear.json':{
-            readFilePromise(PATH_MATCHES_PER_YEAR)
+        case '/matchesPerYear':{
+            ipl.matchesPerYear_sql()
             .then((data)=>{
+                let output=data.reduce((acc,cur)=>{
+                    acc[cur.season]=cur.numberOfMatches
+                    return acc
+                },{})
+                let stringifyOutput=JSON.stringify(output)
                 res.writeHead(200,{'Content-Type':'application/json'})
-                res.write(data)
+                res.write(stringifyOutput)
                 res.end()
-            })
-            .catch((err)=>{
-                errorHandler(res,err)
+            }).catch((error)=>{
+                console.log(error)
+            })  
+            break
+        }
+
+        case '/matchesWonPerTeamPerYear':{
+            ipl.matchesOwnPerTeamPerYear_sql()
+                .then((data)=>{
+                let output=data.reduce((acc,cur)=>{
+                    if(acc[cur.season]==undefined){
+                        acc[cur.season]={}
+                        acc[cur.season][cur.winner]=cur.numberOfMatches
+                    }else{
+                        acc[cur.season][cur.winner]=cur.numberOfMatches
+                    }
+                    return acc
+                },{})
+              
+                let stringifyMatchesWonPerTeamPerYear=JSON.stringify(output)
+                res.writeHead(200,{'Content-Type':'application/json'})
+                res.write(stringifyMatchesWonPerTeamPerYear)
+                res.end()
+                })
+                .catch((error)=>{
+                console.log(error)
+                })
+            break
+        }
+
+        case '/extraRunConceded':{
+            ipl.extraRunConceded_sql()
+            .then((data)=>{
+    
+            let dataFormatted=data.reduce((acc,cur)=>{
+                acc[cur.bowling_team]=cur.extra_runs
+                return acc
+            },{})
+            let stringifyData=JSON.stringify(dataFormatted)
+           
+            res.writeHead(200,{'Content-Type':'application/json'})
+            res.write(stringifyData)
+            res.end()
+
+            }).catch((error)=>{
+              console.log(error)
             })
             break
         }
 
-
-        case '/matchesWonPerTeamPerYear.json':{
-            readFilePromise(PATH_MATCHES_OWN_PAE_TEAM_PER_YEAR)
+        case '/topTenEconomicalBowler':{
+            ipl.topTenEconomicalBowler_sql()
             .then((data)=>{
+                
+                let dataFormatted=data.reduce((acc,cur,index)=>{
+                    acc[index]=[cur.bowler,cur.over_runs]
+                    return acc
+                },{})
+        
+
+                let stringifyTopTenEconomicalBowler=JSON.stringify(dataFormatted)
                 res.writeHead(200,{'Content-Type':'application/json'})
-                res.write(data)
+                res.write(stringifyTopTenEconomicalBowler)
                 res.end()
             })
-            .catch((err)=>{
-                errorHandler(res,err)
-            })
-            break
-        }
-
-        case '/extraRunConceded.json':{
-            readFilePromise(PATH_EXTRA_RUN_CONCEDED)
-            .then((data)=>{
-                res.writeHead(200,{'Content-Type':'application/json'})
-                res.write(data)
-                res.end()
-            })
-            .catch((err)=>{
-                errorHandler(res,err)
-            })
-            break
-        }
-
-        case '/topTenEconomicalBowler.json':{
-            readFilePromise(PATH_TOP_TEN_ECONOMICAL_BOWLER)
-            .then((data)=>{
-                res.writeHead(200,{'Content-Type':'application/json'})
-                res.write(data)
-                res.end()
-            })
-            .catch((err)=>{
-                errorHandler(res,err)
+            .catch((error)=>{
+            console.log(error)
             })
             break
         }
@@ -135,6 +162,6 @@ const server=http.createServer((req,res)=>{
         } 
     }
 })
-server.listen(3000)
+server.listen(envVariable.PORT)
 console.log('server is running on port 3000 ....')
 
