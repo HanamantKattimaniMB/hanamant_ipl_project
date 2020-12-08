@@ -159,11 +159,10 @@ function matchesWonPerTeamPerYear() {
 
                           
         }).catch((err) => {
-            console.log("error occured", err)
+            console.log("error occurred", err)
         })
 }
 matchesWonPerTeamPerYear()
-
 
 function extraRunConceded() {
     fetch("/extraRunConceded")
@@ -178,7 +177,6 @@ function extraRunConceded() {
         .then((data) => {
             let team = Object.keys(data)
             let extraConcededRuns = Object.values(data)
-
 
             Highcharts.chart('chart3', {
                 chart: {
@@ -222,7 +220,7 @@ function extraRunConceded() {
                 }],
             })
         }).catch((err) => {
-            console.log("error occured", err)
+            console.log("error occurred", err)
         })
 }
 extraRunConceded()
@@ -235,7 +233,7 @@ function topTenEconomicalBowler() {
                 return resp.json()
              }
             else {
-               throw new Error("Error occured in response")
+               throw new Error("Error occurred in response")
             }
         })
         .then((data) => {
